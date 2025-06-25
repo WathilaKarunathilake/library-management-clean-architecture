@@ -1,14 +1,15 @@
-using LibraryManagementCleanArchitecture.API.Endpoints;
-using LibraryManagementCleanArchitecture.Application.Features.Books;
-using LibraryManagementCleanArchitecture.Application.Features.Library;
-using LibraryManagementCleanArchitecture.Application.Features.Members;
+using FluentValidation;
+using LibraryManagementCleanArchitecture.API.Extensions;
+using LibraryManagementCleanArchitecture.Application.Behaviour;
+using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
 using LibraryManagementCleanArchitecture.Application.Interfaces;
+using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Core.Application.Profiles;
-using LibraryManagementCleanArchitecture.Core.Domain;
 using LibraryManagementCleanArchitecture.Infastrucute.Persistence.Context;
 using LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Context;
+using LibraryManagementCleanArchitecture.Persistence.UoW;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -30,13 +31,12 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(AddBookCommandHandler).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(RemoveBookCommand).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(GetBooksQuery).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(GetBookByIdQuery).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(RemoveBookCommand).Assembly);
 });
 
+builder.Services.AddValidatorsFromAssemblyContaining<AddBookCommandValidator>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -53,9 +53,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.MapBookEndpoints();
-app.MapLibraryEndpoints();
-app.MapMemberEndpoints();
-
+app.RegisterAllEndpointGroups();
 app.Run();

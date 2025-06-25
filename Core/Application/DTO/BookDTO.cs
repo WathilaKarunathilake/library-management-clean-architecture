@@ -9,7 +9,6 @@ namespace LibraryManagementCleanArchitecture.Core.Application.DTO
         public string? Author { get; set; }
         public string? Category { get; set; }
         public int PublicationYear { get; set; }
-
         public bool Available { get; set; }
     }
 }

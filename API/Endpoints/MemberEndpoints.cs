@@ -1,16 +1,16 @@
-﻿using LibraryManagementCleanArchitecture.Application.Features.Members;
-using LibraryManagementCleanArchitecture.Application.Interfaces;
+﻿using LibraryManagementCleanArchitecture.API.Extensions;
+using LibraryManagementCleanArchitecture.Application.Features.Members.AddMember;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Core.Application.Response;
-using LibraryManagementCleanArchitecture.Domain.Entities;
+using LibraryManagementCleanArchitecture.Application.Features.Members.GetMembers;
 using MediatR;
-using System.Threading.Tasks;
+using System;
 
 namespace LibraryManagementCleanArchitecture.API.Endpoints
 {
-    public static class MemberEndpoints
+    public class MemberEndpoints: IEndpointGroup
     {
-        public static void MapMemberEndpoints(this IEndpointRouteBuilder app)
+        public void MapEndpoints(IEndpointRouteBuilder app)
         {
             var memberGroup = app.MapGroup("/api/members").WithTags("Member Endpoints");
 
@@ -20,43 +20,41 @@ namespace LibraryManagementCleanArchitecture.API.Endpoints
 
         private static async Task<IResult> AddMember(AddMemberCommand addMember, ISender sender)
         {
-            try
-            {
-                var member = await sender.Send(addMember);
-                return Results.Created($"/api/members", new ApiResponse<MemberDTO>
-                {
-                    Data = member
-                });
-            }
-            catch (ArgumentException error)
+            var result = await sender.Send(addMember);
+
+            if (!result.IsSuccess)
             {
                 return Results.BadRequest(new ApiResponse<string>
                 {
-                    Data = error.Message,
+                    Data = result.Error,
                     Success = false
                 });
             }
-        }
 
+            return Results.Created($"/api/members", new ApiResponse<MemberDTO>
+            {
+                Data = result.Value
+            });
+        }
 
         private static async Task<IResult> GetMembers(ISender sender)
         {
-            try
+            var result = await sender.Send(new GetMembersQuery());
+
+            if (result.IsSuccess)
             {
-                var members =await sender.Send(new GetMembersQuery());
-                return Results.Ok(new ApiResponse<IEnumerable<object>>
+                return Results.Ok(new ApiResponse<List<MemberDTO>>
                 {
-                    Data = members
+                    Data = result.Value,
+                    Success = true
                 });
             }
-            catch (ArgumentException ex)
+
+            return Results.BadRequest(new ApiResponse<string>
             {
-                return Results.BadRequest(new ApiResponse<string>
-                {
-                    Data = ex.Message,
-                    Success = false
-                });
-            }
+                Data = result.Error,
+                Success = false
+            });
         }
     }
 }

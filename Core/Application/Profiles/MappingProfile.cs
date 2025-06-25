@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using LibraryManagementCleanArchitecture.Application.Features.Books;
-using LibraryManagementCleanArchitecture.Application.Features.Members;
+using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Domain.Entities;
 
@@ -10,11 +9,12 @@ namespace LibraryManagementCleanArchitecture.Core.Application.Profiles
     {
         public MappingProfile()
         {
-            CreateMap<Book, BookDTO>().ReverseMap();
             CreateMap<Member, MemberDTO>().ReverseMap();
+            CreateMap<LibraryMember, MemberDTO>().ForMember(dest => dest.MemberType, opt => opt.MapFrom(src => "Library")); ;
+            CreateMap<StaffMember, MemberDTO>().ForMember(dest => dest.MemberType, opt => opt.MapFrom(src => "Staff"));
 
-            CreateMap<AddBookCommand, Book>();
-            CreateMap<AddMemberCommand, Member>();
+            CreateMap<Book, BookDTO>().ReverseMap();
+            CreateMap<AddBookCommand, Book>().ReverseMap();
         }
     }
 }

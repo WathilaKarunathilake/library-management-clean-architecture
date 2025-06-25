@@ -1,5 +1,4 @@
-﻿using LibraryManagementCleanArchitecture.Core.Domain;
-using LibraryManagementCleanArchitecture.Domain.Entities;
+﻿using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Infastrucute.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,7 @@ namespace LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Context
         }
 
         public async Task<T> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
-        public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+        public async Task<List<T>> GetAllAsync() => await _dbSet.ToListAsync();
 
         public async Task<T> AddAsync(T entity)
         {

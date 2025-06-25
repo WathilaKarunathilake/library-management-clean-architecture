@@ -1,4 +1,7 @@
-﻿using LibraryManagementCleanArchitecture.Application.Features.Books;
+﻿using LibraryManagementCleanArchitecture.API.Extensions;
+using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
+using LibraryManagementCleanArchitecture.Application.Features.Books.GetBooks;
+using LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBook;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Core.Application.Response;
 using MediatR;
@@ -6,83 +9,71 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementCleanArchitecture.API.Endpoints;
 
-public static class BookEndpoints
+public class BookEndpoints: IEndpointGroup
 {
-    public static void MapBookEndpoints(this IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         var bookGroup = app.MapGroup("/api/books").WithTags("Book Endpoints");
 
-        bookGroup.MapGet("/{memberId}", GetBooks);
         bookGroup.MapPost("/", AddBook);
+        bookGroup.MapGet("/{memberId}", GetBooks);
         bookGroup.MapDelete("/{bookId}", RemoveBook);
     }
 
     private static async Task<IResult> GetBooks(Guid memberId, ISender sender)
     {
-        try
-        {
-            var books = await sender.Send(new GetBooksQuery
-            {
-                memberId = memberId
-            });
+        var result = await sender.Send(new GetBooksQuery { MemberId = memberId });
 
+        if (result.IsSuccess)
+        {
             return Results.Ok(new ApiResponse<List<BookDTO>>
             {
-                Data = books
+                Data = result.Value,
+                Success = true
             });
         }
-        catch (ArgumentException error)
+
+        return Results.BadRequest(new ApiResponse<string>
         {
-            return Results.BadRequest(new ApiResponse<string>
-            {
-                Data = error.Message,
-                Success = false
-            });
-        }
-        catch (KeyNotFoundException key)
-        {
-            return Results.NotFound(new ApiResponse<string>
-            {
-                Data = key.Message,
-                Success = false
-            });
-        }
+            Data = result.Error,
+            Success = false
+        });
     }
 
     private static async Task<IResult> AddBook(AddBookCommand addBookCommand, ISender sender)
     {
-        try
+        var result = await sender.Send(addBookCommand);
+
+        if (result.IsSuccess)
         {
-            var addedBook = await sender.Send(addBookCommand);
             return Results.Ok(new ApiResponse<BookDTO>
             {
-                Data = addedBook
+                Data = result.Value,
+                Success = true
             });
         }
-        catch (ArgumentException error)
+
+        return Results.BadRequest(new ApiResponse<string>
         {
-            return Results.BadRequest(new ApiResponse<string>
-            {
-                Data = error.Message,
-                Success = false
-            });
-        }
+            Data = result.Error,
+            Success = false
+        });
     }
+
 
     private static async Task<IResult> RemoveBook(Guid bookId, ISender sender)
     {
-        try
+        var result = await sender.Send(new RemoveBookCommand { BookId = bookId });
+
+        if (result.IsSuccess)
         {
-            await sender.Send(new RemoveBookCommand { BookId = bookId });
             return Results.NoContent();
         }
-        catch (Exception error)
+
+        return Results.BadRequest(new ApiResponse<string>
         {
-            return Results.BadRequest(new ApiResponse<string>
-            {
-                Data = error.Message,
-                Success = false
-            });
-        }
+            Data = result.Error,
+            Success = false
+        });
     }
 }
