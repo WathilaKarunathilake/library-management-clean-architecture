@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagementCleanArchitecture.Application.Interfaces;
 using LibraryManagementCleanArchitecture.Application.Response;
+using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Domain.Entities;
 using MediatR;
@@ -10,13 +11,15 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Members.AddMem
 {
     public class AddMemberCommandHandler : IRequestHandler<AddMemberCommand, Result<MemberDTO>>
     {
+        private readonly IRepository<Member> memberRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public AddMemberCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public AddMemberCommandHandler(IRepository<Member> memberRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.memberRepository = memberRepository;
         }
 
         public async Task<Result<MemberDTO>> Handle(AddMemberCommand request, CancellationToken cancellationToken)
@@ -24,7 +27,7 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Members.AddMem
             if (request.MemberType == "library")
             {
                 var libraryMember = new LibraryMember(request.Name);
-                await unitOfWork.Members.AddAsync(libraryMember);
+                await memberRepository.AddAsync(libraryMember);
                 await unitOfWork.SaveChangesAsync();
 
                 var dto = mapper.Map<MemberDTO>(libraryMember);
@@ -33,7 +36,7 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Members.AddMem
             else if (request.MemberType == "staff")
             {
                 var staffMember = new StaffMember(request.Name, request.StaffType);
-                await unitOfWork.Members.AddAsync(staffMember);
+                await memberRepository.AddAsync(staffMember);
                 await unitOfWork.SaveChangesAsync();
 
                 var dto = mapper.Map<MemberDTO>(staffMember);

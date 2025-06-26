@@ -5,8 +5,6 @@ using LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBook;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Core.Application.Response;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-
 namespace LibraryManagementCleanArchitecture.API.Endpoints;
 
 public class BookEndpoints: IEndpointGroup

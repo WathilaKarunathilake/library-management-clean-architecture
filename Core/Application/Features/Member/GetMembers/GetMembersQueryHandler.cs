@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagementCleanArchitecture.Application.Interfaces;
 using LibraryManagementCleanArchitecture.Application.Response;
+using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Domain.Entities;
 using MediatR;
@@ -9,18 +10,18 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Members.GetMem
 {
     public class GetMembersQueryHandler: IRequestHandler<GetMembersQuery, Result<List<MemberDTO>>>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IRepository<Member> memberRepository;
         private readonly IMapper mapper;
 
-        public GetMembersQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetMembersQueryHandler(IMapper mapper, IRepository<Member> memberRepository)
         {
-            this.unitOfWork = unitOfWork;
+            this.memberRepository = memberRepository;
             this.mapper = mapper;
         }
 
         public async Task<Result<List<MemberDTO>>> Handle(GetMembersQuery request, CancellationToken cancellationToken)
         {
-            var members = await unitOfWork.Members.GetAllAsync();
+            var members = await memberRepository.GetAllAsync();
 
             if (members == null || !members.Any())
             {

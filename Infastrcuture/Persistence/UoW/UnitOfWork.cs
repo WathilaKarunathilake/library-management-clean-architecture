@@ -10,16 +10,11 @@ namespace LibraryManagementCleanArchitecture.Persistence.UoW
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext context;
-
-        public IRepository<Book> Books { get; }
-        public IRepository<Member> Members { get; }
         private IDbContextTransaction? currentTransaction;
 
-        public UnitOfWork(AppDbContext context, IRepository<Book> books, IRepository<Member> members)
+        public UnitOfWork(AppDbContext context)
         {
             this.context = context;
-            Books = books;
-            Members = members;
         }
 
         public async Task<int> SaveChangesAsync()
@@ -33,7 +28,7 @@ namespace LibraryManagementCleanArchitecture.Persistence.UoW
             }
             catch (Exception)
             {
-                if (currentTransaction == null)
+                if (currentTransaction != null)
                 {
                     await currentTransaction.RollbackAsync();
                 }
@@ -41,7 +36,6 @@ namespace LibraryManagementCleanArchitecture.Persistence.UoW
             }
             finally
             {
-
                 if (currentTransaction != null)
                 {
                     await currentTransaction.DisposeAsync();
@@ -52,8 +46,7 @@ namespace LibraryManagementCleanArchitecture.Persistence.UoW
 
         public void Dispose()
         {
-           context.Dispose();
+            context.Dispose();
         }
     }
-
 }
