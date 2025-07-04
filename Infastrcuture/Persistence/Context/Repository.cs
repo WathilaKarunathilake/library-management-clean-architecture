@@ -1,4 +1,4 @@
-﻿using LibraryManagementCleanArchitecture.Core.Application;
+﻿using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Infastrucute.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,10 +1,8 @@
 ﻿using LibraryManagementCleanArchitecture.API.Extensions;
-using LibraryManagementCleanArchitecture.Application.Features.Members.AddMember;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Core.Application.Response;
 using LibraryManagementCleanArchitecture.Application.Features.Members.GetMembers;
 using MediatR;
-using System;
 
 namespace LibraryManagementCleanArchitecture.API.Endpoints
 {
@@ -13,28 +11,9 @@ namespace LibraryManagementCleanArchitecture.API.Endpoints
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             var memberGroup = app.MapGroup("/api/members").WithTags("Member Endpoints");
+            memberGroup.RequireAuthorization();
 
-            memberGroup.MapPost("/", AddMember);
             memberGroup.MapGet("/", GetMembers);
-        }
-
-        private static async Task<IResult> AddMember(AddMemberCommand addMember, ISender sender)
-        {
-            var result = await sender.Send(addMember);
-
-            if (!result.IsSuccess)
-            {
-                return Results.BadRequest(new ApiResponse<string>
-                {
-                    Data = result.Error,
-                    Success = false
-                });
-            }
-
-            return Results.Created($"/api/members", new ApiResponse<MemberDTO>
-            {
-                Data = result.Value
-            });
         }
 
         private static async Task<IResult> GetMembers(ISender sender)

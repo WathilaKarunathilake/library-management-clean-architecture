@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using LibraryManagementCleanArchitecture.Application.Interfaces;
+using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Domain.Entities;
+using LibraryManagementCleanArchitecture.Domain.Errors;
 using MediatR;
 
 namespace LibraryManagementCleanArchitecture.Application.Features.Members.GetMembers
@@ -22,10 +22,9 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Members.GetMem
         public async Task<Result<List<MemberDTO>>> Handle(GetMembersQuery request, CancellationToken cancellationToken)
         {
             var members = await memberRepository.GetAllAsync();
-
             if (members == null || !members.Any())
             {
-                return Result<List<MemberDTO>>.Failure("No members found.");
+                return Result<List<MemberDTO>>.Failure(DomainErrors.Member.NoMembersFound());
             }
 
             var dtos = members

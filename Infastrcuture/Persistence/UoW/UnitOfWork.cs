@@ -1,4 +1,4 @@
-﻿using LibraryManagementCleanArchitecture.Application.Interfaces;
+﻿using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Domain.Entities;
 using LibraryManagementCleanArchitecture.Infastrucute.Persistence.Context;

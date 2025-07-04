@@ -1,15 +1,19 @@
 ﻿using FluentValidation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace LibraryManagementCleanArchitecture.Application.Features.Members.AddMember
+namespace LibraryManagementCleanArchitecture.Application.Features.Auth.Register
 {
-    public class AddMembersCommandValidator: AbstractValidator<AddMemberCommand>
+    public class RegisterCommandValidator: AbstractValidator<RegisterCommand>
     {
-        public AddMembersCommandValidator()
+        public RegisterCommandValidator()
         {
-
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Name is required.")
-                .MinimumLength(3).WithMessage("Title must be at least 3 characters.");
+               .NotEmpty().WithMessage("Name is required.")
+               .MinimumLength(3).WithMessage("Title must be at least 3 characters.");
 
             RuleFor(x => x.MemberType)
                 .NotEmpty().WithMessage("Member type is required.")

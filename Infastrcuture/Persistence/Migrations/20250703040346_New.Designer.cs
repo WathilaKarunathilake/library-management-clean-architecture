@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagementCleanArchitecture.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250623042938_D")]
-    partial class D
+    [Migration("20250703040346_New")]
+    partial class New
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,23 @@ namespace LibraryManagementCleanArchitecture.Persistence.Migrations
                     b.HasKey("BookId");
 
                     b.ToTable("Books", (string)null);
+                });
+
+            modelBuilder.Entity("LibraryManagementCleanArchitecture.Domain.Entities.Borrowings", b =>
+                {
+                    b.Property<Guid>("BorrowingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BorrowingId");
+
+                    b.ToTable("Borrowings", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementCleanArchitecture.Domain.Entities.Member", b =>

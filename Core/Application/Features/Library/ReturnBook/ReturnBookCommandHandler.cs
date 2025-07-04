@@ -1,7 +1,7 @@
-﻿using LibraryManagementCleanArchitecture.Application.Interfaces;
+﻿using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Domain.Entities;
+using LibraryManagementCleanArchitecture.Domain.Errors;
 using MediatR;
 using System;
 
@@ -11,12 +11,14 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.Return
     {
         private readonly IRepository<Book> bookRepository;
         private readonly IRepository<Member> memberRepository;
+        private readonly IRepository<Borrowings> borrowingRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public ReturnBookCommandHandler(IUnitOfWork unitOfWork, IRepository<Book> bookRepository, IRepository<Member> memberRepository)
+        public ReturnBookCommandHandler(IRepository<Borrowings> borrowingRepository, IUnitOfWork unitOfWork, IRepository<Book> bookRepository, IRepository<Member> memberRepository)
         {
             this.unitOfWork = unitOfWork;
             this.bookRepository = bookRepository;
+            this.borrowingRepository = borrowingRepository;
             this.memberRepository = memberRepository;
         }
 
@@ -24,12 +26,25 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.Return
         {
             var book = await bookRepository.GetByIdAsync(request.BookId);
             var member = await memberRepository.GetByIdAsync(request.MemberId);
+            var borrowings = await borrowingRepository.GetAllAsync();
 
-            if (book == null || member == null)
-                return Result<Unit>.Failure("Book or Member not found.");
+            if (member == null)
+            {
+                return Result<Unit>.Failure(DomainErrors.Library.MemberNotFound());
+            }
+            else if (book == null)
+            {
+                return Result<Unit>.Failure(DomainErrors.Library.BookNotFound());
+            }
+            var borrowing = borrowings
+                .FirstOrDefault(b => b.BookId == request.BookId && b.MemberId == request.MemberId);
+
+            if (borrowing == null)
+                return Result<Unit>.Failure(DomainErrors.Library.BookNotBorrowedByMember());
 
             if (book.Available)
-                return Result<Unit>.Failure("Book is already available.");
+                return Result<Unit>.Failure(DomainErrors.Library.BookAlreadyAvailable());
+
 
             if (member is LibraryMember libraryMember)
             {

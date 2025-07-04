@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LibraryManagementCleanArchitecture.Core.Application
+﻿namespace LibraryManagementCleanArchitecture.Application.Contracts.Persistence
 {
     public interface IRepository<T> where T : class
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryManagementCleanArchitecture.Domain.Errors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace LibraryManagementCleanArchitecture.Application.Response
             Error = error;
         }
 
-        public static Result<T> Success(T value) => new(value, null);
-        public static Result<T> Failure(string error) => new(default, error);
+        public static Result<T> Success(T value) => new (value, null);
+        public static Result<T> Failure(Error error) => new (default, error.Message);
     }
 }

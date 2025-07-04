@@ -31,6 +31,10 @@ namespace LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Configur
             builder.Property(b => b.PublicationYear)
                    .IsRequired();
 
+
+            builder.Property(b => b.Description)
+                   .IsRequired();
+
             builder.Property(b => b.Available)
                    .IsRequired();
         }
