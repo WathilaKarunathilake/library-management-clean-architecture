@@ -11,8 +11,8 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
 
         }
 
-        public StaffMember(string name, string staffType)
-            : base(name)
+        public StaffMember(Guid id, string name, string staffType)
+            : base(id, name)
         {
             StaffType = staffType;
         }

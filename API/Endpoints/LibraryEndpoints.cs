@@ -1,19 +1,44 @@
-﻿using LibraryManagementCleanArchitecture.API.Extensions;
-using LibraryManagementCleanArchitecture.Application.Features.Library.BorrowBook;
-using LibraryManagementCleanArchitecture.Application.Features.Library.ReturnBook;
-using LibraryManagementCleanArchitecture.Core.Application.Response;
-using MediatR;
-
-namespace LibraryManagementCleanArchitecture.API.Endpoints
+﻿namespace LibraryManagementCleanArchitecture.API.Endpoints
 {
+    using LibraryManagementCleanArchitecture.API.Extensions;
+    using LibraryManagementCleanArchitecture.Application.Features.Library.BorrowBook;
+    using LibraryManagementCleanArchitecture.Application.Features.Library.GetBorrowedBoosById;
+    using LibraryManagementCleanArchitecture.Application.Features.Library.ReturnBook;
+    using LibraryManagementCleanArchitecture.Core.Application.DTO;
+    using LibraryManagementCleanArchitecture.Core.Application.Response;
+    using MediatR;
+
     public class LibraryEndpoints : IEndpointGroup
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             var libraryGroup = app.MapGroup("/api/library").WithTags("Library Endpoints");
+            libraryGroup.RequireAuthorization("LIBRARY");
 
-            libraryGroup.MapPost("/borrow/{bookId}/{memberId}", BorrowBook);
-            libraryGroup.MapPost("/return/{bookId}/{memberId}", ReturnBook);
+            libraryGroup.MapPost("/borrowings/{memberId}", GetBorrowingsByMemberId);
+            libraryGroup.MapPost("/borrow", BorrowBook);
+            libraryGroup.MapPost("/return", ReturnBook);
+        }
+
+        private static async Task<IResult> GetBorrowingsByMemberId(
+            string memberId,
+            ISender sender)
+        {
+            var result = await sender.Send(new GetBorrowedBooksByIdQuery { MemberId = memberId });
+            if (result.IsSuccess)
+            {
+                return Results.Ok(new ApiResponse<List<BookDTO>>
+                {
+                    Data = result.Value,
+                    Success = true 
+                });
+            }
+
+            return Results.BadRequest(new ApiResponse<string>
+            {
+                Data = result.Error,
+                Success = false
+            });
         }
 
         private async static Task<IResult> BorrowBook(

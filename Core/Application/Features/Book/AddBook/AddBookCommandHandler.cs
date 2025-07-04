@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
+using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
-using LibraryManagementCleanArchitecture.Application.Interfaces;
 using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Domain.Entities;
 using MediatR;

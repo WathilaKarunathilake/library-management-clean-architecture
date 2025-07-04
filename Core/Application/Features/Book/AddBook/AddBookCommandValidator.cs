@@ -15,7 +15,12 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Books.AddBook
                 .NotEmpty().WithMessage("Author is required.");
 
             RuleFor(x => x.Category)
-                .NotEmpty().WithMessage("Category is required.");
+                .NotEmpty().WithMessage("Category is required.")
+                .MinimumLength(100).WithMessage("Description must be at least 100 characters."); ;
+
+
+            RuleFor(x => x.Description)
+                .NotEmpty().WithMessage("Description is required.");
 
             RuleFor(x => x.PublicationYear)
                 .InclusiveBetween(1500, DateTime.UtcNow.Year)

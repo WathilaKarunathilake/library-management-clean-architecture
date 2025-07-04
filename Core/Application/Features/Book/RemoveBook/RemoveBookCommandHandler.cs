@@ -1,7 +1,7 @@
-﻿using LibraryManagementCleanArchitecture.Application.Interfaces;
+﻿using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Domain.Entities;
+using LibraryManagementCleanArchitecture.Domain.Errors;
 using MediatR;
 using System;
 
@@ -22,7 +22,7 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBo
         {
             var existingBook = await bookRepository.GetByIdAsync(request.BookId);
             if (existingBook == null)
-                return Result<Unit>.Failure("Book not found to remove.");
+                return Result<Unit>.Failure(DomainErrors.Book.NotFound());
 
             await bookRepository.DeleteAsync(request.BookId);
             await unitOfWork.SaveChangesAsync();

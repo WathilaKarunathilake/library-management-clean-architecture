@@ -12,9 +12,10 @@ public class BookEndpoints: IEndpointGroup
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         var bookGroup = app.MapGroup("/api/books").WithTags("Book Endpoints");
+        bookGroup.RequireAuthorization();
 
         bookGroup.MapPost("/", AddBook);
-        bookGroup.MapGet("/{memberId}", GetBooks);
+        bookGroup.MapGet("/", GetBooks);
         bookGroup.MapDelete("/{bookId}", RemoveBook);
     }
 

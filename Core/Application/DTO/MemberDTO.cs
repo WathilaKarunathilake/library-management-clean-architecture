@@ -7,6 +7,7 @@ namespace LibraryManagementCleanArchitecture.Core.Application.DTO
         public Guid MemberID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string MemberType { get; set; } = string.Empty;
+        public string? Token { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public int? BooksBorrowed { get; set; }
