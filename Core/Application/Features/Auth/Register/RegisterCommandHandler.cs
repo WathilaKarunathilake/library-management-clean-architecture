@@ -33,10 +33,10 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Auth.Register
 
         public async Task<Result<AuthResultDTO>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var result = await userService.CreateUserAsync(request.Name, request.Email, request.Password, request.MemberType);
+            var result = await userService.CreateUserAsync(request.Name, request.Email, request.Password, request.MemberType.ToUpper());
 
             if (!result.Succeeded)
-                return Result<AuthResultDTO>.Failure(result.Errors);
+                return Result<AuthResultDTO>.Failure(DomainErrors.Custom.Failure(result.Errors));
 
             if (request.MemberType is not ("library" or "staff"))
                 return Result<AuthResultDTO>.Failure(DomainErrors.Identity.RoleNotFound(request.MemberType));
@@ -50,7 +50,7 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Auth.Register
             await memberRepository.AddAsync(member);
             await unitOfWork.SaveChangesAsync();
 
-            string token = jwtTokenGenerateService.GenerateToken(result.UserId.ToString(), result.Email, request.MemberType);
+            string token = jwtTokenGenerateService.GenerateToken(result.Name, result.UserId.ToString(), result.Email, request.MemberType.ToUpper());
             return Result<AuthResultDTO>.Success(new AuthResultDTO
             {
                 Token = token,

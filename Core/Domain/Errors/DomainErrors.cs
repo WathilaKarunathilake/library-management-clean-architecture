@@ -30,7 +30,8 @@
                Error.NotFound("Member.NoMembersFound", "No members found.");
         }
 
-        public static class Identity {
+        public static class Identity
+        {
             public static Error InvalidCredentials =>
                 Error.Unauthorized("Identity.InvalidCredentials", "The provided email or password is incorrect");
 
@@ -49,6 +50,11 @@
 
             public static Error NotFound() =>
                 Error.NotFound("Book.NotFound", $"Book not found");
+        }
+
+        public static class Custom
+        {
+            public static Error Failure(string error) => Error.Failure("Custom.Failure", error);
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿namespace LibraryManagementCleanArchitecture.API.Endpoints
+﻿// <copyright file="LibraryEndpoints.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
+
+namespace LibraryManagementCleanArchitecture.API.Endpoints
 {
     using LibraryManagementCleanArchitecture.API.Extensions;
     using LibraryManagementCleanArchitecture.Application.Features.Library.BorrowBook;
@@ -15,7 +19,7 @@
             var libraryGroup = app.MapGroup("/api/library").WithTags("Library Endpoints");
             libraryGroup.RequireAuthorization("LIBRARY");
 
-            libraryGroup.MapPost("/borrowings/{memberId}", GetBorrowingsByMemberId);
+            libraryGroup.MapGet("/borrowings/{memberId}", GetBorrowingsByMemberId);
             libraryGroup.MapPost("/borrow", BorrowBook);
             libraryGroup.MapPost("/return", ReturnBook);
         }
@@ -30,18 +34,17 @@
                 return Results.Ok(new ApiResponse<List<BookDTO>>
                 {
                     Data = result.Value,
-                    Success = true 
                 });
             }
 
             return Results.BadRequest(new ApiResponse<string>
             {
                 Data = result.Error,
-                Success = false
+                Success = false,
             });
         }
 
-        private async static Task<IResult> BorrowBook(
+        private static async Task<IResult> BorrowBook(
             BorrowBookCommand borrowCommand,
             ISender sender)
         {
@@ -52,14 +55,13 @@
                 return Results.Ok(new ApiResponse<string>
                 {
                     Data = "Book borrowed successfully!",
-                    Success = true
                 });
             }
 
             return Results.BadRequest(new ApiResponse<string>
             {
                 Data = result.Error,
-                Success = false
+                Success = false,
             });
         }
 
@@ -74,14 +76,13 @@
                 return Results.Ok(new ApiResponse<string>
                 {
                     Data = "Book returned successfully!",
-                    Success = true
                 });
             }
 
             return Results.BadRequest(new ApiResponse<string>
             {
                 Data = result.Error,
-                Success = false
+                Success = false,
             });
         }
     }

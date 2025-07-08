@@ -26,7 +26,7 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Auth.Login
             }
             var userDetails = await userService.GetUserDetailsFromEmail(request.Email);
 
-            string token = jwtTokenGenerateService.GenerateToken(userDetails.UserId.ToString(), userDetails.Email, userDetails.Role);
+            string token = jwtTokenGenerateService.GenerateToken(userDetails.Name, userDetails.UserId.ToString(), userDetails.Email, userDetails.Role);
             return Result<AuthResultDTO>.Success(new AuthResultDTO
             {
                 Token = token,

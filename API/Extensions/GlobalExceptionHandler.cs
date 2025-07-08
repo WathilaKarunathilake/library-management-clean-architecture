@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Serilog;
+﻿// <copyright file="GlobalExceptionHandler.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
 namespace LibraryManagementCleanArchitecture.API.Extensions
 {
+    using Microsoft.AspNetCore.Diagnostics;
+    using Microsoft.AspNetCore.Mvc;
+    using Serilog;
+
     public class GlobalExceptionHandler : IExceptionHandler
     {
         public async ValueTask<bool> TryHandleAsync(
@@ -11,7 +15,8 @@ namespace LibraryManagementCleanArchitecture.API.Extensions
             Exception exception,
             CancellationToken cancellationToken)
         {
-            Log.Error(exception,
+            Log.Error(
+                exception,
                 "Unhandled exception occurred while processing {Method} {Path}. Message: {Message}",
                 httpContext.Request.Method,
                 httpContext.Request.Path,
@@ -21,7 +26,7 @@ namespace LibraryManagementCleanArchitecture.API.Extensions
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Server Error",
-                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1"
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
             };
 
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

@@ -1,17 +1,20 @@
-﻿using LibraryManagementCleanArchitecture.API.Extensions;
-using LibraryManagementCleanArchitecture.Core.Application.DTO;
-using LibraryManagementCleanArchitecture.Core.Application.Response;
-using LibraryManagementCleanArchitecture.Application.Features.Members.GetMembers;
-using MediatR;
-
+﻿// <copyright file="MemberEndpoints.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.API.Endpoints
 {
-    public class MemberEndpoints: IEndpointGroup
+    using LibraryManagementCleanArchitecture.API.Extensions;
+    using LibraryManagementCleanArchitecture.Application.Features.Members.GetMembers;
+    using LibraryManagementCleanArchitecture.Core.Application.DTO;
+    using LibraryManagementCleanArchitecture.Core.Application.Response;
+    using MediatR;
+
+    public class MemberEndpoints : IEndpointGroup
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             var memberGroup = app.MapGroup("/api/members").WithTags("Member Endpoints");
-            memberGroup.RequireAuthorization();
+            memberGroup.RequireAuthorization("ManagementOnly");
 
             memberGroup.MapGet("/", GetMembers);
         }
@@ -25,14 +28,13 @@ namespace LibraryManagementCleanArchitecture.API.Endpoints
                 return Results.Ok(new ApiResponse<List<MemberDTO>>
                 {
                     Data = result.Value,
-                    Success = true
                 });
             }
 
             return Results.BadRequest(new ApiResponse<string>
             {
                 Data = result.Error,
-                Success = false
+                Success = false,
             });
         }
     }

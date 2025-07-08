@@ -8,7 +8,7 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Requirnments
 
         public StaffTypeRequirement(string requiredStaffType)
         {
-            RequiredStaffType = requiredStaffType;
+            RequiredStaffType = requiredStaffType.ToLower();
         }
     }
 }

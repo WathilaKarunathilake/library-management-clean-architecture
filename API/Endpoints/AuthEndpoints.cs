@@ -1,13 +1,16 @@
-﻿using LibraryManagementCleanArchitecture.API.Extensions;
-using LibraryManagementCleanArchitecture.Application.DTO;
-using LibraryManagementCleanArchitecture.Application.Features.Auth.Login;
-using LibraryManagementCleanArchitecture.Application.Features.Auth.Register;
-using LibraryManagementCleanArchitecture.Core.Application.Response;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿// <copyright file="AuthEndpoints.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
 namespace LibraryManagementCleanArchitecture.API.Endpoints
 {
+    using LibraryManagementCleanArchitecture.API.Extensions;
+    using LibraryManagementCleanArchitecture.Application.DTO;
+    using LibraryManagementCleanArchitecture.Application.Features.Auth.Login;
+    using LibraryManagementCleanArchitecture.Application.Features.Auth.Register;
+    using LibraryManagementCleanArchitecture.Core.Application.Response;
+    using MediatR;
+
     public class AuthEndpoints : IEndpointGroup
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
@@ -26,14 +29,14 @@ namespace LibraryManagementCleanArchitecture.API.Endpoints
                 return Results.Ok(new ApiResponse<AuthResultDTO>
                 {
                     Data = result.Value,
-                    Success = true
+                    Success = true,
                 });
             }
 
             return Results.BadRequest(new ApiResponse<string>
             {
                 Data = result.Error,
-                Success = false
+                Success = false,
             });
         }
 
@@ -45,14 +48,14 @@ namespace LibraryManagementCleanArchitecture.API.Endpoints
                 return Results.Ok(new ApiResponse<AuthResultDTO>
                 {
                     Data = result.Value,
-                    Success = true
+                    Success = true,
                 });
             }
 
             return Results.BadRequest(new ApiResponse<string>
             {
                 Data = result.Error,
-                Success = false
+                Success = false,
             });
         }
     }

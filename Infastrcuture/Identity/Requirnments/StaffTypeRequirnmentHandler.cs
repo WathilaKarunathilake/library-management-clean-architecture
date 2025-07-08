@@ -1,36 +1,33 @@
 ﻿using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Domain.Entities;
+using LibraryManagementCleanArchitecture.Infastrcuture.Identity.Requirnments;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Requirnments
+public class StaffTypeHandler : AuthorizationHandler<StaffTypeRequirement>
 {
-    public class StaffTypeHandler : AuthorizationHandler<StaffTypeRequirement>
+    private readonly IRepository<Member> memberRepository;
+
+    public StaffTypeHandler(IRepository<Member> memberRepository)
     {
-        private readonly IRepository<Member> memberRepository;
+        this.memberRepository = memberRepository;
+    }
 
-        public StaffTypeHandler(IRepository<Member> memberRepository)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, StaffTypeRequirement requirement)
+    {
+        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(userId))
+            return;
+
+        var member = await memberRepository.GetByIdAsync(Guid.Parse(userId));
+        if (member is StaffMember staffMember)
         {
-            this.memberRepository = memberRepository;
-        }
-
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, StaffTypeRequirement requirement)
-        {
-            var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
+            if (staffMember.StaffType == requirement.RequiredStaffType)
             {
-                return;
-            }
-
-            var staff = await memberRepository.GetByIdAsync(Guid.Parse(userId));
-            if (staff is StaffMember staffMember)
-            {
-                if (staffMember.StaffType == requirement.RequiredStaffType)
-                {
-                    context.Succeed(requirement);
-                }
+                context.Succeed(requirement);
             }
         }
-
     }
 }

@@ -23,13 +23,6 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Books.GetBooks
 
         public async Task<Result<List<BookDTO>>> Handle(GetBooksQuery request, CancellationToken cancellationToken)
         {
-            var member = await memberRepository.GetByIdAsync(request.MemberId);
-            if (member == null)
-                return Result<List<BookDTO>>.Failure(DomainErrors.Book.MemberNotFound(request.MemberId));
-
-            if (!member.CanViewBooks())
-                return Result<List<BookDTO>>.Failure(DomainErrors.Book.AccessDenied());
-
             var books = await bookRepository.GetAllAsync();
             var bookDtos = mapper.Map<List<BookDTO>>(books);
             return Result<List<BookDTO>>.Success(bookDtos);

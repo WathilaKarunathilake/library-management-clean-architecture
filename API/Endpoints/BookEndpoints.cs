@@ -1,78 +1,83 @@
-﻿using LibraryManagementCleanArchitecture.API.Extensions;
-using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
-using LibraryManagementCleanArchitecture.Application.Features.Books.GetBooks;
-using LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBook;
-using LibraryManagementCleanArchitecture.Core.Application.DTO;
-using LibraryManagementCleanArchitecture.Core.Application.Response;
-using MediatR;
-namespace LibraryManagementCleanArchitecture.API.Endpoints;
+﻿// <copyright file="BookEndpoints.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
-public class BookEndpoints: IEndpointGroup
+namespace LibraryManagementCleanArchitecture.API.Endpoints
 {
-    public void MapEndpoints(IEndpointRouteBuilder app)
+    using LibraryManagementCleanArchitecture.API.Extensions;
+    using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
+    using LibraryManagementCleanArchitecture.Application.Features.Books.GetBooks;
+    using LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBook;
+    using LibraryManagementCleanArchitecture.Core.Application.DTO;
+    using LibraryManagementCleanArchitecture.Core.Application.Response;
+    using MediatR;
+
+    public class BookEndpoints : IEndpointGroup
     {
-        var bookGroup = app.MapGroup("/api/books").WithTags("Book Endpoints");
-        bookGroup.RequireAuthorization();
-
-        bookGroup.MapPost("/", AddBook);
-        bookGroup.MapGet("/", GetBooks);
-        bookGroup.MapDelete("/{bookId}", RemoveBook);
-    }
-
-    private static async Task<IResult> GetBooks(Guid memberId, ISender sender)
-    {
-        var result = await sender.Send(new GetBooksQuery { MemberId = memberId });
-
-        if (result.IsSuccess)
+        public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            return Results.Ok(new ApiResponse<List<BookDTO>>
+            var bookGroup = app.MapGroup("/api/books").WithTags("Book Endpoints");
+
+            bookGroup.MapPost("/", AddBook).RequireAuthorization("Staff");
+            bookGroup.MapGet("/", GetBooks).RequireAuthorization();
+            bookGroup.MapDelete("/{bookId}", RemoveBook).RequireAuthorization("Staff");
+        }
+
+        private static async Task<IResult> GetBooks(ISender sender)
+        {
+            var result = await sender.Send(new GetBooksQuery());
+
+            if (result.IsSuccess)
             {
-                Data = result.Value,
-                Success = true
+                return Results.Ok(new ApiResponse<List<BookDTO>>
+                {
+                    Data = result.Value,
+                });
+            }
+
+            return Results.BadRequest(new ApiResponse<string>
+            {
+                Data = result.Error,
+                Success = false,
             });
         }
 
-        return Results.BadRequest(new ApiResponse<string>
+        private static async Task<IResult> AddBook(AddBookCommand addBookCommand, ISender sender)
         {
-            Data = result.Error,
-            Success = false
-        });
-    }
+            var result = await sender.Send(addBookCommand);
 
-    private static async Task<IResult> AddBook(AddBookCommand addBookCommand, ISender sender)
-    {
-        var result = await sender.Send(addBookCommand);
-
-        if (result.IsSuccess)
-        {
-            return Results.Ok(new ApiResponse<BookDTO>
+            if (result.IsSuccess)
             {
-                Data = result.Value,
-                Success = true
+                return Results.Ok(new ApiResponse<BookDTO>
+                {
+                    Data = result.Value,
+                });
+            }
+
+            return Results.BadRequest(new ApiResponse<string>
+            {
+                Data = result.Error,
+                Success = false,
             });
         }
 
-        return Results.BadRequest(new ApiResponse<string>
+        private static async Task<IResult> RemoveBook(Guid bookId, ISender sender)
         {
-            Data = result.Error,
-            Success = false
-        });
-    }
+            var result = await sender.Send(new RemoveBookCommand { BookId = bookId });
 
+            if (result.IsSuccess)
+            {
+                return Results.Ok(new ApiResponse<string>
+                {
+                    Data = "Removed successfully !",
+                });
+            }
 
-    private static async Task<IResult> RemoveBook(Guid bookId, ISender sender)
-    {
-        var result = await sender.Send(new RemoveBookCommand { BookId = bookId });
-
-        if (result.IsSuccess)
-        {
-            return Results.NoContent();
+            return Results.BadRequest(new ApiResponse<string>
+            {
+                Data = result.Error,
+                Success = false,
+            });
         }
-
-        return Results.BadRequest(new ApiResponse<string>
-        {
-            Data = result.Error,
-            Success = false
-        });
     }
 }

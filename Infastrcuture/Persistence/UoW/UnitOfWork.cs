@@ -1,12 +1,13 @@
-﻿using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
-using LibraryManagementCleanArchitecture.Core.Application;
-using LibraryManagementCleanArchitecture.Domain.Entities;
-using LibraryManagementCleanArchitecture.Infastrucute.Persistence.Context;
-using LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Context;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿// <copyright file="UnitOfWork.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
 namespace LibraryManagementCleanArchitecture.Persistence.UoW
 {
+    using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
+    using LibraryManagementCleanArchitecture.Infastrucute.Persistence.Context;
+    using Microsoft.EntityFrameworkCore.Storage;
+
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext context;
@@ -21,32 +22,33 @@ namespace LibraryManagementCleanArchitecture.Persistence.UoW
         {
             try
             {
-                currentTransaction = await context.Database.BeginTransactionAsync();
-                var result = await context.SaveChangesAsync();
-                await currentTransaction.CommitAsync();
+                this.currentTransaction = await this.context.Database.BeginTransactionAsync();
+                var result = await this.context.SaveChangesAsync();
+                await this.currentTransaction.CommitAsync();
                 return result;
             }
             catch (Exception)
             {
-                if (currentTransaction != null)
+                if (this.currentTransaction != null)
                 {
-                    await currentTransaction.RollbackAsync();
+                    await this.currentTransaction.RollbackAsync();
                 }
+
                 throw;
             }
             finally
             {
-                if (currentTransaction != null)
+                if (this.currentTransaction != null)
                 {
-                    await currentTransaction.DisposeAsync();
-                    currentTransaction = null;
+                    await this.currentTransaction.DisposeAsync();
+                    this.currentTransaction = null;
                 }
             }
         }
 
         public void Dispose()
         {
-            context.Dispose();
+            this.context.Dispose();
         }
     }
 }

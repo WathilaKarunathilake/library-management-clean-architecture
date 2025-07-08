@@ -8,16 +8,16 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public UserService(UserManager<ApplicationUser> userManager)
         {
-            _userManager = userManager;
+            this.userManager = userManager;
         }
 
         public async Task<UserResultDTO> CreateUserAsync(string username, string email, string password, string role)
         {
-            var existingUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var existingUser = await userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (existingUser != null)
             {
                 return new UserResultDTO
@@ -35,7 +35,7 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
                 Email = email,
             };
 
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
             {
@@ -48,7 +48,7 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
                 };
             }
 
-            var roleResult = await _userManager.AddToRoleAsync(user, role);
+            var roleResult = await userManager.AddToRoleAsync(user, role);
             if (!roleResult.Succeeded)
             {
                 string roleErrors = string.Join("; ", roleResult.Errors.Select(e => e.Description));
@@ -62,6 +62,7 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
 
             return new UserResultDTO
             {
+                Name = username,
                 Email = email,
                 Role = role,
                 Succeeded = true,
@@ -71,13 +72,14 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
 
         public async Task<UserResultDTO> GetUserDetailsFromEmail(string email)
         {
-            var users = await _userManager.Users.Where(u => u.Email == email).ToListAsync();
+            var users = await userManager.Users.Where(u => u.Email == email).ToListAsync();
             var existingUser = users.FirstOrDefault();
 
-            var roles = await _userManager.GetRolesAsync(existingUser); 
+            var roles = await userManager.GetRolesAsync(existingUser); 
 
             return new UserResultDTO
             {
+                Name = existingUser.Name,
                 UserId = Guid.Parse(existingUser.Id),
                 Email = existingUser.Email,
                 Role = roles.FirstOrDefault() 
@@ -86,22 +88,28 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
 
         public async Task<bool> CheckPasswordAsync(string email, string password)
         {
-            var users = await _userManager.Users.Where(u => u.Email == email).ToListAsync();
+            var users = await userManager.Users.Where(u => u.Email == email).ToListAsync();
             var user = users.FirstOrDefault();
             if (user == null)
                 return false;
 
-            return await _userManager.CheckPasswordAsync(user, password);
+            return await userManager.CheckPasswordAsync(user, password);
         }
 
         public async Task AddToRoleAsync(string email, string role)
         {
-            var users = await _userManager.Users.Where(u => u.Email == email).ToListAsync();
+            var users = await userManager.Users.Where(u => u.Email == email).ToListAsync();
             var user = users.FirstOrDefault();
             if (user != null)
             {
-                await _userManager.AddToRoleAsync(user, role);
+                await userManager.AddToRoleAsync(user, role);
             }
+        }
+
+        public async Task<string> GetEmailFromId(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            return user.Email;
         }
     }
 }

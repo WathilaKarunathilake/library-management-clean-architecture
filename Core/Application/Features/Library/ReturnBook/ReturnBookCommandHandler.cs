@@ -50,6 +50,8 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.Return
             {
                 book.Available = true;
                 libraryMember.BooksBorrowed = Math.Max(0, libraryMember.BooksBorrowed - 1);
+
+                await borrowingRepository.DeleteAsync(borrowing.BorrowingId);
             }
 
             await bookRepository.UpdateAsync(book);

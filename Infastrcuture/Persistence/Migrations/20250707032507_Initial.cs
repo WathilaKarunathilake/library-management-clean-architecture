@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-#nullable disable
+﻿#nullable disable
 
 namespace LibraryManagementCleanArchitecture.Persistence.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     /// <inheritdoc />
     public partial class Initial : Migration
     {
@@ -17,14 +17,28 @@ namespace LibraryManagementCleanArchitecture.Persistence.Migrations
                 {
                     BookID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Author = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PublicationYear = table.Column<int>(type: "int", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Available = table.Column<bool>(type: "bit", nullable: false)
+                    Available = table.Column<bool>(type: "bit", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.BookID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Borrowings",
+                columns: table => new
+                {
+                    BorrowingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Borrowings", x => x.BorrowingId);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,7 +49,7 @@ namespace LibraryManagementCleanArchitecture.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     MemberType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     BooksBorrowed = table.Column<int>(type: "int", nullable: true),
-                    StaffType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                    StaffType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                 },
                 constraints: table =>
                 {
@@ -48,6 +62,9 @@ namespace LibraryManagementCleanArchitecture.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Books");
+
+            migrationBuilder.DropTable(
+                name: "Borrowings");
 
             migrationBuilder.DropTable(
                 name: "Members");

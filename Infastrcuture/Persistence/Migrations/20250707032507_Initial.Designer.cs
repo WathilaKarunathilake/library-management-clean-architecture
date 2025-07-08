@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagementCleanArchitecture.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250703040346_New")]
-    partial class New
+    [Migration("20250707032507_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,10 @@ namespace LibraryManagementCleanArchitecture.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PublicationYear")
                         .HasColumnType("int");
