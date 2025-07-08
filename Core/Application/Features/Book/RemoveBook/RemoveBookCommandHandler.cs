@@ -10,12 +10,14 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBo
     public class RemoveBookCommandHandler: IRequestHandler<RemoveBookCommand, Result<Unit>>
     {
         private readonly IRepository<Book> bookRepository;
-        private readonly IUnitOfWork unitOfWork;  
+        private readonly IRepository<Borrowings> borrowingRepository;
+        private readonly IUnitOfWork unitOfWork;
        
-        public RemoveBookCommandHandler(IRepository<Book> bookRepository, IUnitOfWork unitOfWork)
+        public RemoveBookCommandHandler(IRepository<Book> bookRepository, IUnitOfWork unitOfWork, IRepository<Borrowings> borrowingRepository)
         {
             this.bookRepository = bookRepository;
             this.unitOfWork = unitOfWork;
+            this.borrowingRepository = borrowingRepository;
         }
 
         public async Task<Result<Unit>> Handle(RemoveBookCommand request, CancellationToken cancellationToken)
@@ -24,9 +26,16 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBo
             if (existingBook == null)
                 return Result<Unit>.Failure(DomainErrors.Book.NotFound());
 
+            var borrowings = await borrowingRepository.GetAllAsync();
+            var relatedBorrowings = borrowings.Where(b => b.BookId == request.BookId).ToList();
+
+            foreach (var borrowing in relatedBorrowings)
+            {
+                await borrowingRepository.DeleteAsync(borrowing.BorrowingId);
+            }
+
             await bookRepository.DeleteAsync(request.BookId);
             await unitOfWork.SaveChangesAsync();
-
             return Result<Unit>.Success(Unit.Value);
         }
     }
