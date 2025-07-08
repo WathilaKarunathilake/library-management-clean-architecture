@@ -24,14 +24,15 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBo
         {
             var existingBook = await bookRepository.GetByIdAsync(request.BookId);
             if (existingBook == null)
+            {
                 return Result<Unit>.Failure(DomainErrors.Book.NotFound());
+            }
 
             var borrowings = await borrowingRepository.GetAllAsync();
             var relatedBorrowings = borrowings.Where(b => b.BookId == request.BookId).ToList();
-
-            foreach (var borrowing in relatedBorrowings)
+            if (relatedBorrowings.Any())
             {
-                await borrowingRepository.DeleteAsync(borrowing.BorrowingId);
+                return Result<Unit>.Failure(DomainErrors.Book.BookBorrowedCannotDelete());
             }
 
             await bookRepository.DeleteAsync(request.BookId);

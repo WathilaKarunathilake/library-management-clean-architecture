@@ -42,6 +42,7 @@
 
         public static class Book
         {
+            public static Error BookBorrowedCannotDelete() => Error.Conflict("Book.BookBorrowedCannotDelete", "The book is already borrowed so cannot remove");
             public static Error AccessDenied() =>
                Error.Forbidden("Book.AccessDenied", "You do not have permission to access this resource");
 
