@@ -2,6 +2,7 @@
 {
     using FluentValidation;
     using LibraryManagementCleanArchitecture.Application.Response;
+    using LibraryManagementCleanArchitecture.Domain.Errors;
     using MediatR;
 
     public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
@@ -29,10 +30,12 @@
                     var resultType = typeof(TResponse);
                     if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(Result<>))
                     {
+                        var error = Error.Failure("ValidationError", errorMessage);
+
                         var failureResult = typeof(Result<>)
                             .MakeGenericType(resultType.GetGenericArguments())
                             .GetMethod("Failure")!
-                            .Invoke(null, new object[] { errorMessage });
+                            .Invoke(null, new object[] { error });
 
                         return (TResponse)failureResult!;
                     }

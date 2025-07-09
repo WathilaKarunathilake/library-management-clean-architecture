@@ -7,6 +7,7 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
         private Guid bookId;
         private string? title;
         private string? author;
+        private string? description;
         private string? category;
         private int publicationYear;
         private bool available;
@@ -21,6 +22,22 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException("Title cannot be empty.");
                 title = value;
+            }
+        }
+
+        public string? Description
+        {
+            get => description;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("Description name cannot be empty.");
+                else if (value.Length < 20)
+                {
+                    throw new ArgumentException("Description name must be atleast 100 characters.");
+                }
+                description = value;
+
             }
         }
 
@@ -68,12 +85,13 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
             Available = true;
         }
 
-        public Book(string title, string author, int publicationYear, string category)
+        public Book(string title, string author, int publicationYear, string category, string desription)
         {
             Title = title;
             Author = author;
             PublicationYear = publicationYear;
             Category = category;
+            Description = description;
             Available = true;
         }
 

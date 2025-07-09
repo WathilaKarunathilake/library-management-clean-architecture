@@ -26,9 +26,10 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
 
         }
 
-        public Member(string name)
+        public Member(Guid id, string name)
         {
             Name = name;
+            this.memberID = id;
         }
 
         abstract public bool CanBorrow();

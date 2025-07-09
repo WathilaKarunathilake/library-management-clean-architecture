@@ -11,8 +11,8 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
 
         }
 
-        public LibraryMember(string name)
-            : base(name)
+        public LibraryMember(Guid id, string name)
+            : base(id, name)
         {
             booksBorrowed = 0;
         }
