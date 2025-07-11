@@ -1,8 +1,11 @@
-﻿using MediatR;
-using Serilog;
-
+﻿// <copyright file="LoggingBehavior{TRequest,TResponse}.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Behaviours
 {
+    using MediatR;
+    using Serilog;
+
     public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {

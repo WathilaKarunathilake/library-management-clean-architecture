@@ -1,9 +1,24 @@
-﻿using System;
-
+﻿// <copyright file="Book.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Domain.Entities
 {
     public class Book
     {
+        private static readonly List<string> AllowedCategories = new ()
+        {
+            "Adventure",
+            "Fantasy",
+            "Science Fiction",
+            "Mystery",
+            "Romance",
+            "Horror",
+            "Biography",
+            "History",
+            "Self-Help",
+            "Children",
+        };
+
         private Guid bookId;
         private string? title;
         private string? author;
@@ -12,92 +27,108 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
         private int publicationYear;
         private bool available;
 
-        public Guid BookId{ get { return bookId; } }
+        public Guid BookId => this.bookId;
 
         public string? Title
         {
-            get => title;
+            get => this.title;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
+                {
                     throw new ArgumentException("Title cannot be empty.");
-                title = value;
+                }
+
+                this.title = value;
             }
         }
 
         public string? Description
         {
-            get => description;
+            get => this.description;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Description name cannot be empty.");
+                {
+                    throw new ArgumentException("Description cannot be empty.");
+                }
                 else if (value.Length < 20)
                 {
-                    throw new ArgumentException("Description name must be atleast 100 characters.");
+                    throw new ArgumentException("Description must be at least 20 characters.");
                 }
-                description = value;
 
+                this.description = value;
             }
         }
 
         public string? Author
         {
-            get => author;
+            get => this.author;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Author name cannot be empty.");
-                author = value;
+                {
+                    throw new ArgumentException("Author cannot be empty.");
+                }
+
+                this.author = value;
             }
         }
 
         public int PublicationYear
         {
-            get => publicationYear;
+            get => this.publicationYear;
             set
             {
-                if (value <= 0 || value > DateTime.Now.Year + 1) 
-                    throw new ArgumentException("Invalid publication year.");
-                publicationYear = value;
+                if (value < 1500 || value > DateTime.Now.Year)
+                {
+                    throw new ArgumentException($"Publication year must be between 1500 and {DateTime.Now.Year}.");
+                }
+
+                this.publicationYear = value;
             }
         }
 
         public string? Category
         {
-            get => category;
+            get => this.category;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
+                {
                     throw new ArgumentException("Category cannot be empty.");
-                category = value;
+                }
+
+                if (!AllowedCategories.Contains(value))
+                {
+                    throw new ArgumentException($"Invalid category. Allowed categories: {string.Join(", ", AllowedCategories)}");
+                }
+
+                this.category = value;
             }
         }
 
         public bool Available
         {
-            get => available;
-            set => available = value;
+            get => this.available;
+            set => this.available = value;
         }
 
-        public Book()
-        {
-            Available = true;
-        }
+        public Book() => this.Available = true;
 
-        public Book(string title, string author, int publicationYear, string category, string desription)
+        public Book(string title, string author, int publicationYear, string category, string description)
         {
-            Title = title;
-            Author = author;
-            PublicationYear = publicationYear;
-            Category = category;
-            Description = description;
-            Available = true;
+            this.Title = title;
+            this.Author = author;
+            this.PublicationYear = publicationYear;
+            this.Category = category;
+            this.Description = description;
+            this.Available = true;
         }
 
         public override string ToString()
         {
-            return $"\nTitle: {Title}\nAuthor: {Author}\nPublication Year: {PublicationYear}\nCategory: {Category}\nAvailability: {Available}\n";
+            return $"\nTitle: {this.Title}\nAuthor: {this.Author}\nPublication Year: {this.PublicationYear}\nCategory: {this.Category}\nAvailability: {this.Available}\n";
         }
     }
 }

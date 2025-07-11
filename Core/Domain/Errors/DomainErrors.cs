@@ -1,4 +1,8 @@
-﻿namespace LibraryManagementCleanArchitecture.Domain.Errors
+﻿// <copyright file="DomainErrors.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
+
+namespace LibraryManagementCleanArchitecture.Domain.Errors
 {
     public static class DomainErrors
     {
@@ -21,7 +25,6 @@
 
             public static Error BookAlreadyAvailable() =>
                Error.NotFound("Library.BookAlreadyAvailable", "Book already availble.");
-
         }
 
         public static class Member
@@ -37,12 +40,12 @@
 
             public static Error RoleNotFound(string roleName) =>
                 Error.NotFound("Identity.RoleNotFound", $"The role '{roleName}' does not exist");
-
         }
 
         public static class Book
         {
             public static Error BookBorrowedCannotDelete() => Error.Conflict("Book.BookBorrowedCannotDelete", "The book is already borrowed so cannot remove");
+
             public static Error AccessDenied() =>
                Error.Forbidden("Book.AccessDenied", "You do not have permission to access this resource");
 

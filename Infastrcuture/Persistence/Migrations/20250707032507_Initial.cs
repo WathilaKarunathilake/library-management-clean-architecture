@@ -1,4 +1,8 @@
-﻿#nullable disable
+﻿// <copyright file="20250707032507_Initial.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
+
+#nullable disable
 
 namespace LibraryManagementCleanArchitecture.Persistence.Migrations
 {

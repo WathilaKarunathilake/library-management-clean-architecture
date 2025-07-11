@@ -21,11 +21,11 @@ public class AddBookCommandHandler: IRequestHandler<AddBookCommand, Result<BookD
 
     public async Task<Result<BookDTO>> Handle(AddBookCommand request, CancellationToken cancellationToken)
     {
-        var book = mapper.Map<Book>(request);
-        await bookRepository.AddAsync(book);
-        await unitOfWork.SaveChangesAsync();
+        var book = this.mapper.Map<Book>(request);
+        await this.bookRepository.AddAsync(book);
+        await this.unitOfWork.SaveChangesAsync();
 
-        var bookDto = mapper.Map<BookDTO>(book);
+        var bookDto = this.mapper.Map<BookDTO>(book);
         return Result<BookDTO>.Success(bookDto);
     }
 }

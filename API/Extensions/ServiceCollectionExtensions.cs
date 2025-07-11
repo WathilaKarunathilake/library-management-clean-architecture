@@ -1,7 +1,6 @@
 ﻿// <copyright file="ServiceCollectionExtensions.cs" company="Ascentic">
 // Copyright (c) Ascentic. All rights reserved.
 // </copyright>
-
 namespace LibraryManagementCleanArchitecture.API.Extensions
 {
     using System.Text;

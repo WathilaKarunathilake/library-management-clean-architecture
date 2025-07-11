@@ -1,7 +1,6 @@
 ﻿// <copyright file="UnitOfWork.cs" company="Ascentic">
 // Copyright (c) Ascentic. All rights reserved.
 // </copyright>
-
 namespace LibraryManagementCleanArchitecture.Persistence.UoW
 {
     using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;

@@ -1,31 +1,36 @@
-﻿using System;
-
+﻿// <copyright file="LibraryMember.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Domain.Entities
 {
-    public class LibraryMember: Member
+    public class LibraryMember : Member
     {
         private int booksBorrowed;
 
-        public LibraryMember() : base()
+        public LibraryMember()
+            : base()
         {
-
         }
 
         public LibraryMember(Guid id, string name)
             : base(id, name)
         {
-            booksBorrowed = 0;
+            this.booksBorrowed = 0;
         }
 
         public int BooksBorrowed
         {
-            get => booksBorrowed;
+            get => this.booksBorrowed;
             set
             {
                 if (value >= 0)
-                    booksBorrowed = value;
+                {
+                    this.booksBorrowed = value;
+                }
                 else
+                {
                     throw new ArgumentException("Number of books borrowed cannot be negative.");
+                }
             }
         }
 
@@ -41,7 +46,7 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
 
         public override string ToString()
         {
-            return $"\nName: {Name}\nType: Member\nBooks Borrowed: {booksBorrowed}\n";
+            return $"\nName: {this.Name}\nType: Member\nBooks Borrowed: {this.booksBorrowed}\n";
         }
     }
 }

@@ -19,12 +19,12 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Auth.Login
 
         public async Task<Result<AuthResultDTO>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {   
-            var user = await userService.CheckPasswordAsync(request.Email, request.Password);
+            var user = await userService.CheckPasswordAsync(request.email, request.password);
             if (!user)
             {
                 return Result<AuthResultDTO>.Failure(DomainErrors.Identity.InvalidCredentials);
             }
-            var userDetails = await userService.GetUserDetailsFromEmail(request.Email);
+            var userDetails = await userService.GetUserDetailsFromEmail(request.email);
 
             string token = jwtTokenGenerateService.GenerateToken(userDetails.Name, userDetails.UserId.ToString(), userDetails.Email, userDetails.Role);
             return Result<AuthResultDTO>.Success(new AuthResultDTO

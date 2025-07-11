@@ -1,11 +1,14 @@
-﻿using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
-using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Domain.Entities;
-using LibraryManagementCleanArchitecture.Domain.Errors;
-using MediatR;
-
+﻿// <copyright file="BorrowBookCommandHandler.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Library.BorrowBook
 {
+    using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
+    using LibraryManagementCleanArchitecture.Application.Response;
+    using LibraryManagementCleanArchitecture.Domain.Entities;
+    using LibraryManagementCleanArchitecture.Domain.Errors;
+    using MediatR;
+
     public class BorrowBookCommandHandler : IRequestHandler<BorrowBookCommand, Result<Unit>>
     {
         private readonly IRepository<Book> bookRepository;
@@ -23,8 +26,8 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.Borrow
 
         public async Task<Result<Unit>> Handle(BorrowBookCommand request, CancellationToken cancellationToken)
         {
-            var member = await memberRepository.GetByIdAsync(request.MemberId);
-            var book = await bookRepository.GetByIdAsync(request.BookId);
+            var member = await this.memberRepository.GetByIdAsync(request.MemberId);
+            var book = await this.bookRepository.GetByIdAsync(request.BookId);
 
             if (member == null)
             {
@@ -36,14 +39,18 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.Borrow
             }
 
             if (!member.CanBorrow())
+            {
                 return Result<Unit>.Failure(DomainErrors.Library.AccessDenied());
+            }
 
             if (!book.Available)
+            {
                 return Result<Unit>.Failure(DomainErrors.Library.BookNotAvailableToBorrow());
+            }
 
             if (member is LibraryMember libraryMember)
             {
-                await borrowRepository.AddAsync(new Borrowings
+                await this.borrowRepository.AddAsync(new Borrowings
                 {
                     BookId = request.BookId,
                     MemberId = request.MemberId,
@@ -53,9 +60,9 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.Borrow
                 libraryMember.BooksBorrowed++;
             }
 
-            await bookRepository.UpdateAsync(book);
-            await memberRepository.UpdateAsync(member);
-            await unitOfWork.SaveChangesAsync();
+            await this.bookRepository.UpdateAsync(book);
+            await this.memberRepository.UpdateAsync(member);
+            await this.unitOfWork.SaveChangesAsync();
 
             return Result<Unit>.Success(Unit.Value);
         }

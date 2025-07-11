@@ -1,15 +1,17 @@
-﻿using AutoMapper;
-using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
-using LibraryManagementCleanArchitecture.Application.Contracts.Services;
-using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Core.Application.DTO;
-using LibraryManagementCleanArchitecture.Domain.Entities;
-using LibraryManagementCleanArchitecture.Domain.Errors;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-
+﻿// <copyright file="GetMembersQueryHandler.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Members.GetMembers
 {
+    using AutoMapper;
+    using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
+    using LibraryManagementCleanArchitecture.Application.Contracts.Services;
+    using LibraryManagementCleanArchitecture.Application.Response;
+    using LibraryManagementCleanArchitecture.Core.Application.DTO;
+    using LibraryManagementCleanArchitecture.Domain.Entities;
+    using LibraryManagementCleanArchitecture.Domain.Errors;
+    using MediatR;
+
     public class GetMembersQueryHandler : IRequestHandler<GetMembersQuery, Result<List<MemberDTO>>>
     {
         private readonly IRepository<Member> memberRepository;
@@ -28,7 +30,7 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Members.GetMem
 
         public async Task<Result<List<MemberDTO>>> Handle(GetMembersQuery request, CancellationToken cancellationToken)
         {
-            var members = await memberRepository.GetAllAsync();
+            var members = await this.memberRepository.GetAllAsync();
             if (members == null || !members.Any())
             {
                 return Result<List<MemberDTO>>.Failure(DomainErrors.Member.NoMembersFound());
@@ -40,14 +42,14 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Members.GetMem
             {
                 MemberDTO? dto = member switch
                 {
-                    LibraryMember lm => mapper.Map<MemberDTO>(lm),
-                    StaffMember sm => mapper.Map<MemberDTO>(sm),
+                    LibraryMember lm => this.mapper.Map<MemberDTO>(lm),
+                    StaffMember sm => this.mapper.Map<MemberDTO>(sm),
                     _ => null
                 };
 
                 if (dto != null)
                 {
-                    var email = await userManager.GetEmailFromId(member.MemberID.ToString()); 
+                    var email = await this.userManager.GetEmailFromId(member.MemberID.ToString());
                     dto.Email = email;
                     dtos.Add(dto);
                 }

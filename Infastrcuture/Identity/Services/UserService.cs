@@ -1,11 +1,14 @@
-﻿using LibraryManagementCleanArchitecture.Application.Contracts.Services;
-using LibraryManagementCleanArchitecture.Application.DTO;
-using LibraryManagementCleanArchitecture.Infastrcuture.Identity.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-
+﻿// <copyright file="UserService.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
 {
+    using LibraryManagementCleanArchitecture.Application.Contracts.Services;
+    using LibraryManagementCleanArchitecture.Application.DTO;
+    using LibraryManagementCleanArchitecture.Infastrcuture.Identity.Models;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -17,14 +20,14 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
 
         public async Task<UserResultDTO> CreateUserAsync(string username, string email, string password, string role)
         {
-            var existingUser = await userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var existingUser = await this.userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (existingUser != null)
             {
                 return new UserResultDTO
                 {
                     Errors = "Email is already registered.",
                     Succeeded = false,
-                    UserId = Guid.Empty
+                    UserId = Guid.Empty,
                 };
             }
 
@@ -35,7 +38,7 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
                 Email = email,
             };
 
-            var result = await userManager.CreateAsync(user, password);
+            var result = await this.userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
             {
@@ -44,11 +47,11 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
                 {
                     Errors = errorMessages,
                     Succeeded = false,
-                    UserId = Guid.Empty
+                    UserId = Guid.Empty,
                 };
             }
 
-            var roleResult = await userManager.AddToRoleAsync(user, role);
+            var roleResult = await this.userManager.AddToRoleAsync(user, role);
             if (!roleResult.Succeeded)
             {
                 string roleErrors = string.Join("; ", roleResult.Errors.Select(e => e.Description));
@@ -56,7 +59,7 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
                 {
                     Errors = $"User created, but failed to assign role: {roleErrors}",
                     Succeeded = false,
-                    UserId = Guid.Parse(user.Id)
+                    UserId = Guid.Parse(user.Id),
                 };
             }
 
@@ -66,49 +69,60 @@ namespace LibraryManagementCleanArchitecture.Infastrcuture.Identity.Services
                 Email = email,
                 Role = role,
                 Succeeded = true,
-                UserId = Guid.Parse(user.Id)
+                UserId = Guid.Parse(user.Id),
             };
         }
 
         public async Task<UserResultDTO> GetUserDetailsFromEmail(string email)
         {
-            var users = await userManager.Users.Where(u => u.Email == email).ToListAsync();
+            var users = await this.userManager.Users.Where(u => u.Email == email).ToListAsync();
             var existingUser = users.FirstOrDefault();
+            if (existingUser == null)
+            {
+                return new UserResultDTO
+                {
+                    Errors = "User not found.",
+                    Succeeded = false,
+                    UserId = Guid.Empty,
+                };
+            }
 
-            var roles = await userManager.GetRolesAsync(existingUser); 
+            var roles = await this.userManager.GetRolesAsync(existingUser);
 
             return new UserResultDTO
             {
                 Name = existingUser.Name,
                 UserId = Guid.Parse(existingUser.Id),
                 Email = existingUser.Email,
-                Role = roles.FirstOrDefault() 
+                Role = roles.FirstOrDefault(),
             };
         }
 
         public async Task<bool> CheckPasswordAsync(string email, string password)
         {
-            var users = await userManager.Users.Where(u => u.Email == email).ToListAsync();
+            var users = await this.userManager.Users.Where(u => u.Email == email).ToListAsync();
             var user = users.FirstOrDefault();
             if (user == null)
+            {
                 return false;
+            }
 
-            return await userManager.CheckPasswordAsync(user, password);
+            return await this.userManager.CheckPasswordAsync(user, password);
         }
 
         public async Task AddToRoleAsync(string email, string role)
         {
-            var users = await userManager.Users.Where(u => u.Email == email).ToListAsync();
+            var users = await this.userManager.Users.Where(u => u.Email == email).ToListAsync();
             var user = users.FirstOrDefault();
             if (user != null)
             {
-                await userManager.AddToRoleAsync(user, role);
+                await this.userManager.AddToRoleAsync(user, role);
             }
         }
 
         public async Task<string> GetEmailFromId(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await this.userManager.FindByIdAsync(id);
             return user.Email;
         }
     }

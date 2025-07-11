@@ -1,7 +1,6 @@
 ﻿// <copyright file="Program.cs" company="Ascentic">
 // Copyright (c) Ascentic. All rights reserved.
 // </copyright>
-
 using LibraryManagementCleanArchitecture.API.Extensions;
 using Serilog;
 

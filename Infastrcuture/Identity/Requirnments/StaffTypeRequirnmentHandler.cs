@@ -2,7 +2,6 @@
 using LibraryManagementCleanArchitecture.Domain.Entities;
 using LibraryManagementCleanArchitecture.Infastrcuture.Identity.Requirnments;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 public class StaffTypeHandler : AuthorizationHandler<StaffTypeRequirement>
@@ -19,9 +18,11 @@ public class StaffTypeHandler : AuthorizationHandler<StaffTypeRequirement>
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userId))
+        {
             return;
+        }
 
-        var member = await memberRepository.GetByIdAsync(Guid.Parse(userId));
+        var member = await this.memberRepository.GetByIdAsync(Guid.Parse(userId));
         if (member is StaffMember staffMember)
         {
             if (staffMember.StaffType == requirement.RequiredStaffType)

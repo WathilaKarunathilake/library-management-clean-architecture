@@ -1,9 +1,12 @@
-﻿using LibraryManagementCleanArchitecture.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
+﻿// <copyright file="BorrowingsConfiguration.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Persistence.Configuration
 {
+    using LibraryManagementCleanArchitecture.Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
     public class BorrowingsConfiguration : IEntityTypeConfiguration<Borrowings>
     {
         public void Configure(EntityTypeBuilder<Borrowings> builder)

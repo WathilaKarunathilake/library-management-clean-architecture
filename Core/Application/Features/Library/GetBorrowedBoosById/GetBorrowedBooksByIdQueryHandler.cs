@@ -1,13 +1,15 @@
-﻿using AutoMapper;
-using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
-using LibraryManagementCleanArchitecture.Application.Features.Library.BorrowBook;
-using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Core.Application.DTO;
-using LibraryManagementCleanArchitecture.Domain.Entities;
-using MediatR;
-
+﻿// <copyright file="GetBorrowedBooksByIdQueryHandler.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Library.GetBorrowedBoosById
 {
+    using AutoMapper;
+    using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
+    using LibraryManagementCleanArchitecture.Application.Response;
+    using LibraryManagementCleanArchitecture.Core.Application.DTO;
+    using LibraryManagementCleanArchitecture.Domain.Entities;
+    using MediatR;
+
     public class GetBorrowedBooksByIdQueryHandler : IRequestHandler<GetBorrowedBooksByIdQuery, Result<List<BookDTO>>>
     {
         private readonly IRepository<Borrowings> borrowingRepository;
@@ -26,7 +28,7 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.GetBor
 
         public async Task<Result<List<BookDTO>>> Handle(GetBorrowedBooksByIdQuery request, CancellationToken cancellationToken)
         {
-            var borrowings = await borrowingRepository.GetAllAsync();
+            var borrowings = await this.borrowingRepository.GetAllAsync();
 
             var borrowedBookIds = borrowings
                 .Where(b => b.MemberId == Guid.Parse(request.MemberId))
@@ -34,13 +36,13 @@ namespace LibraryManagementCleanArchitecture.Application.Features.Library.GetBor
                 .Distinct()
                 .ToList();
 
-            var books = await bookRepository.GetAllAsync();
+            var books = await this.bookRepository.GetAllAsync();
 
             var borrowedBooks = books
                 .Where(book => borrowedBookIds.Contains(book.BookId))
                 .ToList();
 
-            var bookDTOs = mapper.Map<List<BookDTO>>(borrowedBooks);
+            var bookDTOs = this.mapper.Map<List<BookDTO>>(borrowedBooks);
             return Result<List<BookDTO>>.Success(bookDTOs);
         }
     }

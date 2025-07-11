@@ -1,18 +1,15 @@
-﻿using FluentValidation;
-using LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBook;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// <copyright file="GetBorrowedBooksByIdValidator.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Library.GetBorrowedBoosById
 {
+    using FluentValidation;
+
     public class GetBorrowedBooksByIdValidator : AbstractValidator<GetBorrowedBooksByIdQuery>
     {
         public GetBorrowedBooksByIdValidator()
         {
-            RuleFor(x => x.MemberId).NotEmpty().WithMessage("Member ID is required.");
+            this.RuleFor(x => x.MemberId).NotEmpty().WithMessage("Member ID is required.");
         }
     }
 }
