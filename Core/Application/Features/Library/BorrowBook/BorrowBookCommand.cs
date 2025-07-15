@@ -1,17 +1,15 @@
-﻿using LibraryManagementCleanArchitecture.Application.Response;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// <copyright file="BorrowBookCommand.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Library.BorrowBook
 {
-    public class BorrowBookCommand: IRequest<Result<Unit>>
+    using LibraryManagementCleanArchitecture.Application.Response;
+    using MediatR;
+
+    public class BorrowBookCommand : IRequest<Result<Unit>>
     {
         public Guid BookId { get; set; }
-        public Guid MemberId { get; set; }
 
+        public Guid MemberId { get; set; }
     }
 }

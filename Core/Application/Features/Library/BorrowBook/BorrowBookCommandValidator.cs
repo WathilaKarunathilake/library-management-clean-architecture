@@ -1,18 +1,16 @@
-﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// <copyright file="BorrowBookCommandValidator.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Library.BorrowBook
 {
-    public class BorrowBookCommandValidator: AbstractValidator<BorrowBookCommand>
+    using FluentValidation;
+
+    public class BorrowBookCommandValidator : AbstractValidator<BorrowBookCommand>
     {
         public BorrowBookCommandValidator()
         {
-            RuleFor(x => x.BookId).NotEmpty().WithMessage("Book ID is required.");
-            RuleFor(x => x.MemberId).NotEmpty().WithMessage("Member ID is required.");
+            this.RuleFor(x => x.BookId).NotEmpty().WithMessage("Book ID is required.");
+            this.RuleFor(x => x.MemberId).NotEmpty().WithMessage("Member ID is required.");
         }
     }
 }

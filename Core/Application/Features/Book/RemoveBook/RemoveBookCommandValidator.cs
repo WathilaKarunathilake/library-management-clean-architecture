@@ -1,13 +1,15 @@
-﻿using FluentValidation;
-using System;
-
+﻿// <copyright file="RemoveBookCommandValidator.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Books.RemoveBook
 {
-    public class RemoveBookCommandValidator: AbstractValidator<RemoveBookCommand>
+    using FluentValidation;
+
+    public class RemoveBookCommandValidator : AbstractValidator<RemoveBookCommand>
     {
         public RemoveBookCommandValidator()
         {
-            RuleFor(x => x.BookId)
+            this.RuleFor(x => x.BookId)
                 .NotEmpty().WithMessage("Book ID is required.");
         }
     }

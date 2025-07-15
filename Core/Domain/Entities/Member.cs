@@ -1,4 +1,6 @@
-﻿using System;
+﻿// <copyright file="Member.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
 namespace LibraryManagementCleanArchitecture.Domain.Entities
 {
@@ -7,32 +9,44 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
         private string? name;
         private Guid memberID;
 
-        public Guid MemberID {  get { return memberID; } }
+        public Guid MemberID
+        {
+            get { return this.memberID; }
+        }
 
         public string? Name
         {
-            get { return name; }
+            get
+            {
+                return this.name;
+            }
+
             set
             {
                 if (!string.IsNullOrWhiteSpace(value))
-                    name = value;
+                {
+                    this.name = value;
+                }
                 else
+                {
                     throw new ArgumentException("Name cannot be empty.");
+                }
             }
         }
 
         public Member()
         {
-
         }
 
-        public Member(string name)
+        public Member(Guid id, string name)
         {
-            Name = name;
+            this.Name = name;
+            this.memberID = id;
         }
 
-        abstract public bool CanBorrow();
-        abstract public bool CanViewBooks();
+        public abstract bool CanBorrow();
+
+        public abstract bool CanViewBooks();
 
     }
 }

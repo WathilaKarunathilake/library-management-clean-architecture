@@ -42,6 +42,10 @@ namespace LibraryManagementCleanArchitecture.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PublicationYear")
                         .HasColumnType("int");
 
@@ -53,6 +57,23 @@ namespace LibraryManagementCleanArchitecture.Persistence.Migrations
                     b.HasKey("BookId");
 
                     b.ToTable("Books", (string)null);
+                });
+
+            modelBuilder.Entity("LibraryManagementCleanArchitecture.Domain.Entities.Borrowings", b =>
+                {
+                    b.Property<Guid>("BorrowingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BorrowingId");
+
+                    b.ToTable("Borrowings", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementCleanArchitecture.Domain.Entities.Member", b =>

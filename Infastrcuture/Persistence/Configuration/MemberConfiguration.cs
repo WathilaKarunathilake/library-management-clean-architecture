@@ -1,10 +1,13 @@
-﻿using LibraryManagementCleanArchitecture.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
+﻿// <copyright file="MemberConfiguration.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
 namespace LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Configuration
 {
+    using LibraryManagementCleanArchitecture.Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
     public class MemberConfiguration : IEntityTypeConfiguration<Member>
     {
         public void Configure(EntityTypeBuilder<Member> builder)

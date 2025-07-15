@@ -1,14 +1,12 @@
-﻿using LibraryManagementCleanArchitecture.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// <copyright file="StaffMemberConfiguration.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Configuration
 {
+    using LibraryManagementCleanArchitecture.Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
     public class StaffMemberConfiguration : IEntityTypeConfiguration<StaffMember>
     {
         public void Configure(EntityTypeBuilder<StaffMember> builder)

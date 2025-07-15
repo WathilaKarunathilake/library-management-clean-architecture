@@ -1,57 +1,43 @@
-using FluentValidation;
+﻿// <copyright file="Program.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 using LibraryManagementCleanArchitecture.API.Extensions;
-using LibraryManagementCleanArchitecture.Application.Behaviour;
-using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
-using LibraryManagementCleanArchitecture.Application.Interfaces;
-using LibraryManagementCleanArchitecture.Core.Application;
-using LibraryManagementCleanArchitecture.Core.Application.Profiles;
-using LibraryManagementCleanArchitecture.Infastrucute.Persistence.Context;
-using LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Context;
-using LibraryManagementCleanArchitecture.Persistence.UoW;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("AllowAll", policy =>
+   public static void Main(string[] args)
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+        builder.Host.UseSerilog((context, services, configuration) =>
+            configuration.ReadFrom.Configuration(context.Configuration));
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+        builder.Services
+            .AddCustomCors()
+            .AddCustomControllers()
+            .AddCustomSwagger()
+            .AddApplicationServices()
+            .AddInfrastructureServices(builder.Configuration)
+            .AddCustomAuthentication(builder.Configuration)
+            .AddAuthorizationPolicies()
+            .AddCustomValidation();
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(typeof(AddBookCommandHandler).Assembly);
-});
+        var app = builder.Build();
 
-builder.Services.AddValidatorsFromAssemblyContaining<AddBookCommandValidator>();
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        app.UseSerilogRequestLogging();
+        app.UseCors("AllowFrontend");
+        app.UseExceptionHandler();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
-var app = builder.Build();
-
-app.UseCors("AllowAll");
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+        app.RegisterAllEndpointGroups();
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-app.RegisterAllEndpointGroups();
-app.Run();

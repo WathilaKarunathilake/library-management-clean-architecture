@@ -1,7 +1,11 @@
-﻿using System.Reflection;
+﻿// <copyright file="EndpointGroupExtension.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
 namespace LibraryManagementCleanArchitecture.API.Extensions
 {
+    using System.Reflection;
+
     public static class EndpointGroupExtension
     {
         public static void RegisterAllEndpointGroups(this IEndpointRouteBuilder app)
@@ -18,5 +22,5 @@ namespace LibraryManagementCleanArchitecture.API.Extensions
                 }
             }
         }
-    } 
+    }
 }

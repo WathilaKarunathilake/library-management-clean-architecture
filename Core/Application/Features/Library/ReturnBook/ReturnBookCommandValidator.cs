@@ -1,19 +1,16 @@
-﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// <copyright file="ReturnBookCommandValidator.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Application.Features.Library.ReturnBook
 {
-    public class ReturnBookCommandValidator: AbstractValidator<ReturnBookCommand>
+    using FluentValidation;
+
+    public class ReturnBookCommandValidator : AbstractValidator<ReturnBookCommand>
     {
         public ReturnBookCommandValidator()
         {
-
-            RuleFor(x => x.BookId).NotEmpty().WithMessage("Book ID is required.");
-            RuleFor(x => x.MemberId).NotEmpty().WithMessage("Member ID is required.");
+            this.RuleFor(x => x.BookId).NotEmpty().WithMessage("Book ID is required.");
+            this.RuleFor(x => x.MemberId).NotEmpty().WithMessage("Member ID is required.");
         }
     }
 }

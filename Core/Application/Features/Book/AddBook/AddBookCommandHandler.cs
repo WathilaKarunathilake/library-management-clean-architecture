@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
+using LibraryManagementCleanArchitecture.Application.Contracts.Persistence;
 using LibraryManagementCleanArchitecture.Application.Features.Books.AddBook;
-using LibraryManagementCleanArchitecture.Application.Interfaces;
 using LibraryManagementCleanArchitecture.Application.Response;
-using LibraryManagementCleanArchitecture.Core.Application;
 using LibraryManagementCleanArchitecture.Core.Application.DTO;
 using LibraryManagementCleanArchitecture.Domain.Entities;
 using MediatR;
@@ -22,11 +21,11 @@ public class AddBookCommandHandler: IRequestHandler<AddBookCommand, Result<BookD
 
     public async Task<Result<BookDTO>> Handle(AddBookCommand request, CancellationToken cancellationToken)
     {
-        var book = mapper.Map<Book>(request);
-        await bookRepository.AddAsync(book);
-        await unitOfWork.SaveChangesAsync();
+        var book = this.mapper.Map<Book>(request);
+        await this.bookRepository.AddAsync(book);
+        await this.unitOfWork.SaveChangesAsync();
 
-        var bookDto = mapper.Map<BookDTO>(book);
+        var bookDto = this.mapper.Map<BookDTO>(book);
         return Result<BookDTO>.Success(bookDto);
     }
 }

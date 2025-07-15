@@ -1,37 +1,43 @@
-﻿using System;
-
+﻿// <copyright file="StaffMember.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 namespace LibraryManagementCleanArchitecture.Domain.Entities
 {
-    public class StaffMember: Member
+    public class StaffMember : Member
     {
         private string? staffType;
 
-        public StaffMember(): base()
+        public StaffMember()
+            : base()
         {
-
         }
 
-        public StaffMember(string name, string staffType)
-            : base(name)
+        public StaffMember(Guid id, string name, string staffType)
+            : base(id, name)
         {
-            StaffType = staffType;
+            this.StaffType = staffType;
         }
 
         public string? StaffType
         {
-            get => staffType;
+            get => this.staffType;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
+                {
                     throw new ArgumentException("Staff type cannot be empty.");
+                }
 
                 string lower = value.ToLower();
 
                 if (lower == "minor" || lower == "management")
-                    staffType = value;
+                {
+                    this.staffType = value;
+                }
                 else
+                {
                     throw new ArgumentException("Staff type must be minor or management.");
-
+                }
             }
         }
 
@@ -42,12 +48,12 @@ namespace LibraryManagementCleanArchitecture.Domain.Entities
 
         public override bool CanViewBooks()
         {
-            return staffType?.ToLower() == "management";
+            return this.staffType?.ToLower() == "management";
         }
 
         public override string ToString()
         {
-            return $"\nName: {Name}\nType: Staff\nStaff Type: {staffType}\n";
+            return $"\nName: {this.Name}\nType: Staff\nStaff Type: {this.staffType}\n";
         }
     }
 }

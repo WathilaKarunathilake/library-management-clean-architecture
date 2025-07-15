@@ -1,9 +1,13 @@
-﻿using LibraryManagementCleanArchitecture.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿// <copyright file="BookConfiguration.cs" company="Ascentic">
+// Copyright (c) Ascentic. All rights reserved.
+// </copyright>
 
 namespace LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Configuration
 {
+    using LibraryManagementCleanArchitecture.Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
     public class BookConfiguration : IEntityTypeConfiguration<Book>
     {
         public void Configure(EntityTypeBuilder<Book> builder)
@@ -29,6 +33,9 @@ namespace LibraryManagementCleanArchitecture.Infastrucuture.Persistence.Configur
                    .IsRequired();
 
             builder.Property(b => b.PublicationYear)
+                   .IsRequired();
+
+            builder.Property(b => b.Description)
                    .IsRequired();
 
             builder.Property(b => b.Available)
